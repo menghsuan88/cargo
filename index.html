@@ -1,260 +1,193 @@
-import React, { useState } from 'react';
-import { Truck, CheckCircle2, XCircle, DollarSign, Phone, MapPin, Info, Trophy } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>車輛報價查詢系統</title>
+    <!-- 引用外部資源：React, Tailwind, Lucide Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-100">
+    <div id="root"></div>
 
-export default function App() {
-  const [selectedTonnage, setSelectedTonnage] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState('機場');
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-  const locations = [
-    '機場', '台北市內湖區', '台北市松山區', '台北市南港區', '台北市信義區', 
-    '台北市士林區', '台北市大同區', '台北市北投區', '新北市汐止區', '新北市淡水區', 
-    '宜蘭縣', '基隆市', '花蓮縣', '台東縣'
-  ];
-  
-  const companies = [
-    { name: '大誠', phone: '02-77515563' },
-    { name: '新欣', phone: '02-2812-6906' },
-    { name: '全濬', phone: '03-313-4455' }
-  ];
+        function App() {
+            const [selectedTonnage, setSelectedTonnage] = useState(null);
+            const [selectedLocation, setSelectedLocation] = useState('機場');
 
-  const pricingData = {
-    '3.5T': {
-      '機場': [2500, 2100, 4300],
-      '台北市內湖區': [2000, 2000, 3800],
-      '台北市松山區': [2100, 2000, 4000],
-      '台北市南港區': [2000, 2000, 4000],
-      '台北市信義區': [2100, 2000, 4000],
-      '台北市士林區': [2200, 2000, 4200],
-      '台北市大同區': [2100, 2000, 4000],
-      '台北市北投區': [2200, 2000, 4200],
-      '新北市汐止區': [2000, 2400, 4000],
-      '新北市淡水區': [2800, 2300, 4800],
-      '宜蘭縣': [3300, 3300, 5300],
-      '基隆市': [2800, 2400, 4800],
-      '花蓮縣': ['電洽', '無', '電洽'],
-      '台東縣': ['電洽', '無', '電洽']
-    },
-    '6.2T': {
-      '機場': [4000, '無', 6500],
-      '台北市內湖區': [3000, '無', 5000],
-      '台北市松山區': [3200, '無', 5300],
-      '台北市南港區': [3000, '無', 5300],
-      '台北市信義區': [3200, '無', 5300],
-      '台北市士林區': [3500, '無', 5700],
-      '台北市大同區': [3200, '無', 5300],
-      '台北市北投區': [3500, '無', 5700],
-      '新北市汐止區': [3000, '無', 5300],
-      '新北市淡水區': [4300, '無', 6500],
-      '宜蘭縣': [4800, '無', 7000],
-      '基隆市': [4300, '無', 6500],
-      '花蓮縣': ['電洽', '無', '電洽'],
-      '台東縣': ['電洽', '無', '電洽']
-    },
-    '17T': {
-      '機場': [6000, '無', 12500],
-      '台北市內湖區': ['電洽', '無', '電洽'],
-      '台北市松山區': ['電洽', '無', '電洽'],
-      '台北市南港區': ['電洽', '無', '電洽'],
-      '台北市信義區': ['電洽', '無', '電洽'],
-      '台北市士林區': ['電洽', '無', '電洽'],
-      '台北市大同區': ['電洽', '無', '電洽'],
-      '台北市北投區': ['電洽', '無', '電洽'],
-      '新北市汐止區': ['電洽', '無', '電洽'],
-      '新北市淡水區': ['電洽', '無', '電洽'],
-      '宜蘭縣': ['電洽', '無', '電洽'],
-      '基隆市': ['電洽', '無', '電洽'],
-      '花蓮縣': ['電洽', '無', '電洽'],
-      '台東縣': ['電洽', '無', '電洽']
-    }
-  };
-
-  const tonnages = Object.keys(pricingData);
-
-  const getSortedResults = () => {
-    if (!selectedTonnage) return { sorted: [], minPrice: null };
-    
-    const results = companies.map((comp, index) => ({
-      name: comp.name,
-      phone: comp.phone,
-      price: pricingData[selectedTonnage][selectedLocation][index]
-    }));
-
-    const numericPrices = results
-      .map(r => r.price)
-      .filter(p => typeof p === 'number');
-    
-    const minPrice = numericPrices.length > 0 ? Math.min(...numericPrices) : null;
-
-    const sorted = [...results].sort((a, b) => {
-      const isNumA = typeof a.price === 'number';
-      const isNumB = typeof b.price === 'number';
-
-      if (isNumA && isNumB) return a.price - b.price;
-      if (isNumA && !isNumB) return -1;
-      if (!isNumA && isNumB) return 1;
-      
-      if (a.price === '電洽' && b.price === '無') return -1;
-      if (a.price === '無' && b.price === '電洽') return 1;
-      return 0;
-    });
-
-    return { sorted, minPrice };
-  };
-
-  const { sorted: sortedCompanies, minPrice } = getSortedResults();
-
-  return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 font-sans text-slate-900">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
-
-        <div className="bg-[#FFCC00] p-6 text-slate-900 text-center border-b-4 border-red-600">
-          <div className="flex justify-center mb-3">
-            <Truck size={40} className="text-red-600" />
-          </div>
-          <h1 className="text-2xl font-black tracking-tight uppercase italic">車輛報價查詢系統</h1>
-        </div>
-
-        <div className="p-6">
-          <div className="mb-6">
-            <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">1. 選擇取件地點</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-900">
-                <MapPin size={20} />
-              </div>
-              <select
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl appearance-none focus:border-[#FFCC00] outline-none transition-colors text-slate-900 font-bold text-lg cursor-pointer shadow-sm"
-              >
-                {locations.map(loc => (
-                  <option key={loc} value={loc}>{loc}</option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-900">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
+            const locations = [
+                '機場', '台北市內湖區', '台北市松山區', '台北市南港區', '台北市信義區', 
+                '台北市士林區', '台北市大同區', '台北市北投區', '新北市汐止區', '新北市淡水區', 
+                '宜蘭縣', '基隆市', '花蓮縣', '台東縣'
+            ];
             
-            <div className="mt-3 flex items-start gap-2 bg-blue-50 border border-blue-100 p-3 rounded-lg">
-              <Info size={16} className="text-blue-500 mt-0.5 shrink-0" />
-              <p className="text-xs text-blue-700 leading-relaxed">
-                <span className="font-bold underline decoration-blue-300">備註：</span> 報價金額係以「台北市內湖區」送達計算，各區域運費可能隨即時路況或具體地址調整。
-              </p>
-            </div>
-          </div>
+            const companies = [
+                { name: '大誠', phone: '02-77515563' },
+                { name: '新欣', phone: '02-2812-6906' },
+                { name: '全濬', phone: '03-313-4455' }
+            ];
 
-          <div className="mb-8">
-            <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2">2. 選擇車輛類型</label>
-            <div className="grid grid-cols-3 gap-3">
-              {tonnages.map((ton) => (
-                <button
-                  key={ton}
-                  onClick={() => setSelectedTonnage(ton)}
-                  className={`py-3 px-2 rounded-xl font-black text-lg transition-all duration-200 border-2
-                    ${
-                      selectedTonnage === ton
-                        ? 'bg-[#FFCC00] border-slate-900 text-slate-900 shadow-md transform scale-105'
-                        : 'bg-white border-slate-200 text-slate-400 hover:border-[#FFCC00] hover:text-slate-700 hover:bg-yellow-50'
-                    }`}
-                >
-                  {ton}
-                </button>
-              ))}
-            </div>
-          </div>
+            const pricingData = {
+                '3.5T': {
+                    '機場': [2500, 2100, 4300], '台北市內湖區': [2000, 2000, 3800],
+                    '台北市松山區': [2100, 2000, 4000], '台北市南港區': [2000, 2000, 4000],
+                    '台北市信義區': [2100, 2000, 4000], '台北市士林區': [2200, 2000, 4200],
+                    '台北市大同區': [2100, 2000, 4000], '台北市北投區': [2200, 2000, 4200],
+                    '新北市汐止區': [2000, 2400, 4000], '新北市淡水區': [2800, 2300, 4800],
+                    '宜蘭縣': [3300, 3300, 5300], '基隆市': [2800, 2400, 4800],
+                    '花蓮縣': ['電洽', '無', '電洽'], '台東縣': ['電洽', '無', '電洽']
+                },
+                '6.2T': {
+                    '機場': [4000, '無', 6500], '台北市內湖區': [3000, '無', 5000],
+                    '台北市松山區': [3200, '無', 5300], '台北市南港區': [3000, '無', 5300],
+                    '台北市信義區': [3200, '無', 5300], '台北市士林區': [3500, '無', 5700],
+                    '台北市大同區': [3200, '無', 5300], '台北市北投區': [3500, '無', 5700],
+                    '新北市汐止區': [3000, '無', 5300], '新北市淡水區': [4300, '無', 6500],
+                    '宜蘭縣': [4800, '無', 7000], '基隆市': [4300, '無', 6500],
+                    '花蓮縣': ['電洽', '無', '電洽'], '台東縣': ['電洽', '無', '電洽']
+                },
+                '17T': {
+                    '機場': [6000, '無', 12500], '台北市內湖區': ['電洽', '無', '電洽'],
+                    '台北市松山區': ['電洽', '無', '電洽'], '台北市南港區': ['電洽', '無', '電洽'],
+                    '台北市信義區': ['電洽', '無', '電洽'], '台北市士林區': ['電洽', '無', '電洽'],
+                    '台北市大同區': ['電洽', '無', '電洽'], '台北市北投區': ['電洽', '無', '電洽'],
+                    '新北市汐止區': ['電洽', '無', '電洽'], '新北市淡水區': ['電洽', '無', '電洽'],
+                    '宜蘭縣': ['電洽', '無', '電洽'], '基隆市': ['電洽', '無', '電洽'],
+                    '花蓮縣': ['電洽', '無', '電洽'], '台東縣': ['電洽', '無', '電洽']
+                }
+            };
 
-          <div className="bg-slate-50 rounded-2xl p-2 min-h-[250px] border border-slate-200 shadow-inner">
-            {!selectedTonnage ? (
-              <div className="flex flex-col items-center justify-center h-[250px] text-slate-400">
-                <DollarSign size={48} className="mb-4 opacity-10" />
-                <p className="font-bold">請點選車輛類型以顯示報價</p>
-              </div>
-            ) : (
-              <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="px-2 pb-2 mb-2 border-b-2 border-dashed border-slate-200 flex justify-between items-end">
-                  <div className="flex gap-2 shrink-0">
-                    <span className="bg-slate-900 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-tighter">Best Deal First</span>
-                  </div>
-                  <span className="text-sm font-black text-slate-700 truncate ml-2">
-                    {selectedLocation} / {selectedTonnage}
-                  </span>
-                  <span className="text-[10px] font-bold text-slate-400 italic ml-auto shrink-0">TWD</span>
-                </div>
+            const tonnages = Object.keys(pricingData);
 
-                {sortedCompanies.map((item) => {
-                  const isNumber = typeof item.price === 'number';
-                  const isContact = item.price === '電洽';
-                  const isBest = isNumber && item.price === minPrice;
+            const getSortedResults = () => {
+                if (!selectedTonnage) return { sorted: [], minPrice: null };
+                const results = companies.map((comp, index) => ({
+                    name: comp.name,
+                    phone: comp.phone,
+                    price: pricingData[selectedTonnage][selectedLocation][index]
+                }));
+                const numericPrices = results.map(r => r.price).filter(p => typeof p === 'number');
+                const minPrice = numericPrices.length > 0 ? Math.min(...numericPrices) : null;
+                
+                const sorted = [...results].sort((a, b) => {
+                    if (typeof a.price === 'number' && typeof b.price === 'number') return a.price - b.price;
+                    if (typeof a.price === 'number') return -1;
+                    if (typeof b.price === 'number') return 1;
+                    return 0;
+                });
+                return { sorted, minPrice };
+            };
 
-                  return (
-                    <div
-                      key={item.name}
-                      className={`flex items-center justify-between p-4 rounded-xl bg-white border-2 transition-all relative overflow-hidden ${
-                        isBest ? 'border-[#FFCC00] shadow-md bg-yellow-50/20' :
-                        isNumber ? 'border-slate-100 shadow-sm' :
-                        isContact ? 'border-amber-200 bg-amber-50/30' :
-                        'border-slate-100 opacity-50 grayscale'
-                      }`}
-                    >
-                      {isBest && (
-                        <div className="absolute top-0 right-0 z-10">
-                          <div className="bg-[#FFCC00] text-[10px] font-black px-2 py-0.5 rounded-bl-lg flex items-center gap-1 shadow-sm">
-                            <Trophy size={10} /> 最優惠
-                          </div>
+            const { sorted: sortedCompanies, minPrice } = getSortedResults();
+
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            });
+
+            return (
+                <div className="min-h-screen flex items-center justify-center p-4 text-slate-900">
+                    <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
+                        {/* 標題欄：黃底紅字 */}
+                        <div className="bg-[#FFCC00] p-6 text-center border-b-4 border-red-600">
+                            <h1 className="text-2xl font-black italic text-red-600">車輛報價查詢系統</h1>
                         </div>
-                      )}
 
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${
-                          isNumber ? 'bg-[#FFCC00] text-slate-900' :
-                          isContact ? 'bg-amber-100 text-amber-600' :
-                          'bg-slate-100 text-slate-400'
-                        }`}>
-                          {isNumber ? <CheckCircle2 size={20} strokeWidth={3} /> :
-                           isContact ? <Phone size={20} strokeWidth={3} /> :
-                           <XCircle size={20} strokeWidth={3} />}
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-lg font-black text-slate-900 uppercase italic tracking-tight leading-tight">{item.name}</span>
-                          <span className="text-[10px] font-bold text-slate-500 mt-0.5 flex items-center gap-1">
-                            <Phone size={10} /> {item.phone}
-                          </span>
-                        </div>
-                      </div>
+                        <div className="p-6">
+                            {/* 地點選擇 */}
+                            <div className="mb-6">
+                                <label className="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest flex items-center gap-1">
+                                    <i data-lucide="map-pin" className="w-3 h-3"></i> 1. 選擇取件地點
+                                </label>
+                                <select 
+                                    value={selectedLocation} 
+                                    onChange={(e) => setSelectedLocation(e.target.value)}
+                                    className="w-full p-3 bg-white border-2 border-slate-200 rounded-xl font-bold outline-none focus:border-[#FFCC00]"
+                                >
+                                    {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+                                </select>
+                            </div>
 
-                      <div className={`text-right ${isBest ? 'pt-4' : ''}`}>
-                        {isNumber ? (
-                          <div className="flex flex-col items-end">
-                            <span className="text-2xl font-black text-slate-900 tracking-tighter leading-none">
-                              {item.price.toLocaleString()}
-                            </span>
-                            <span className="text-[10px] text-slate-400 font-bold">元</span>
-                          </div>
-                        ) : isContact ? (
-                          <span className="text-lg font-black text-amber-600 tracking-wider">
-                            {item.price}
-                          </span>
-                        ) : (
-                          <span className="text-lg font-bold text-slate-400">
-                            {item.price}
-                          </span>
-                        )}
-                      </div>
+                            {/* 噸數選擇 */}
+                            <div className="mb-8">
+                                <label className="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest flex items-center gap-1">
+                                    <i data-lucide="info" className="w-3 h-3"></i> 2. 選擇車輛類型
+                                </label>
+                                <div className="grid grid-cols-3 gap-3">
+                                    {tonnages.map(ton => (
+                                        <button 
+                                            key={ton} 
+                                            onClick={() => setSelectedTonnage(ton)}
+                                            className={`py-3 rounded-xl font-black border-2 transition-all ${selectedTonnage === ton ? 'bg-[#FFCC00] border-slate-900' : 'bg-white border-slate-200 text-slate-400'}`}
+                                        >
+                                            {ton}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* 報價結果 */}
+                            <div className="bg-slate-50 rounded-2xl p-2 min-h-[250px] border border-slate-200 shadow-inner">
+                                {!selectedTonnage ? (
+                                    <div className="flex flex-col items-center justify-center h-[250px] text-slate-300 font-bold">
+                                        <p>請點選車輛類型</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3 animate-fade-in">
+                                        {sortedCompanies.map(item => {
+                                            const isNumber = typeof item.price === 'number';
+                                            const isBest = isNumber && item.price === minPrice;
+                                            return (
+                                                <div key={item.name} className={`flex items-center justify-between p-4 rounded-xl bg-white border-2 relative ${isBest ? 'border-[#FFCC00]' : 'border-slate-100'}`}>
+                                                    {isBest && (
+                                                        <div className="absolute top-0 right-0 bg-[#FFCC00] text-[10px] font-black px-2 py-0.5 rounded-bl-lg">
+                                                            最優惠
+                                                        </div>
+                                                    )}
+                                                    <div className="flex flex-col">
+                                                        <span className="text-lg font-black italic">{item.name}</span>
+                                                        <span className="text-[10px] text-slate-500 font-bold flex items-center gap-1">
+                                                            <i data-lucide="phone" className="w-2 h-2"></i> {item.phone}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-right flex flex-col items-end">
+                                                        <span className="text-2xl font-black tracking-tighter">
+                                                            {isNumber ? item.price.toLocaleString() : item.price}
+                                                        </span>
+                                                        {isNumber && <span className="text-[10px] text-slate-400 font-bold">元</span>}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* 腳註 */}
+                        <div className="bg-slate-50 py-3 text-center border-t border-slate-100">
+                            <p className="text-[10px] text-red-600 font-black italic tracking-widest">※ 此報價為未稅價 ※</p>
+                        </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-        
-        <div className="bg-slate-50 py-3 text-center border-t border-slate-100 flex flex-col gap-1">
-          <p className="text-[10px] text-red-600 font-black uppercase tracking-widest">※ 此報價為未稅價 ※</p>
-          <p className="text-[10px] text-slate-400 font-medium tracking-tight">費用請依實際報價為主</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
