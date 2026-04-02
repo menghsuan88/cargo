@@ -74,11 +74,16 @@
 
             const getSortedResults = () => {
                 if (!selectedTonnage) return { sorted: [], minPrice: null };
-                const results = companies.map((comp, index) => ({
-                    name: comp.name,
-                    phone: comp.phone,
-                    price: pricingData[selectedTonnage][selectedLocation][index]
-                }));
+                
+                // 取得所有廠商資料並過濾掉價格為「無」的項目
+                const results = companies
+                    .map((comp, index) => ({
+                        name: comp.name,
+                        phone: comp.phone,
+                        price: pricingData[selectedTonnage][selectedLocation][index]
+                    }))
+                    .filter(item => item.price !== '無'); // 過濾掉「無」
+
                 const numericPrices = results.map(r => r.price).filter(p => typeof p === 'number');
                 const minPrice = numericPrices.length > 0 ? Math.min(...numericPrices) : null;
                 
@@ -153,6 +158,10 @@
                                 {!selectedTonnage ? (
                                     <div className="flex flex-col items-center justify-center h-[250px] text-slate-300 font-bold">
                                         <p>請點選車輛類型</p>
+                                    </div>
+                                ) : sortedCompanies.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center h-[250px] text-slate-400 font-bold">
+                                        <p>該地區目前無配合廠商報價</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-3 animate-fade-in">
