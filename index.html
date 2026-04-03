@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>車輛報價查詢系統</title>
+    <title>外車報價查詢系統</title>
     <!-- 引用外部資源：React, Tailwind, Lucide Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -29,41 +29,41 @@
             const [selectedLocation, setSelectedLocation] = useState('機場');
 
             const locations = [
-                '機場', '台北市內湖區', '台北市松山區', '台北市南港區', '台北市信義區', 
-                '台北市士林區', '台北市大同區', '台北市北投區', '新北市汐止區', '新北市淡水區', 
+                '機場', '臺北市內湖區', '臺北市松山區', '臺北市南港區', '臺北市信義區', 
+                '臺北市士林區', '臺北市大同區', '臺北市北投區', '新北市汐止區', '新北市淡水區', 
                 '宜蘭縣', '基隆市', '花蓮縣', '台東縣'
             ];
             
             const companies = [
-                { name: '大誠', phone: '02-77515563' },
+                { name: '大誠', phone: '02-7751-5563' },
                 { name: '新欣', phone: '02-2812-6906' },
                 { name: '全濬', phone: '03-313-4455' }
             ];
 
             const pricingData = {
                 '3.5T': {
-                    '機場': [2500, 2100, 4300], '台北市內湖區': [2000, 2000, 3800],
-                    '台北市松山區': [2100, 2000, 4000], '台北市南港區': [2000, 2000, 4000],
-                    '台北市信義區': [2100, 2000, 4000], '台北市士林區': [2200, 2000, 4200],
-                    '台北市大同區': [2100, 2000, 4000], '台北市北投區': [2200, 2000, 4200],
+                    '機場': [2500, 2100, 4300], '臺北市內湖區': [2000, 2000, 3800],
+                    '臺北市松山區': [2100, 2000, 4000], '臺北市南港區': [2000, 2000, 4000],
+                    '臺北市信義區': [2100, 2000, 4000], '臺北市士林區': [2200, 2000, 4200],
+                    '臺北市大同區': [2100, 2000, 4000], '臺北市北投區': [2200, 2000, 4200],
                     '新北市汐止區': [2000, 2400, 4000], '新北市淡水區': [2800, 2300, 4800],
                     '宜蘭縣': [3300, 3300, 5300], '基隆市': [2800, 2400, 4800],
                     '花蓮縣': ['電洽', '無', '電洽'], '台東縣': ['電洽', '無', '電洽']
                 },
                 '6.2T': {
-                    '機場': [4000, '無', 6500], '台北市內湖區': [3000, '無', 5000],
-                    '台北市松山區': [3200, '無', 5300], '台北市南港區': [3000, '無', 5300],
-                    '台北市信義區': [3200, '無', 5300], '台北市士林區': [3500, '無', 5700],
-                    '台北市大同區': [3200, '無', 5300], '台北市北投區': [3500, '無', 5700],
+                    '機場': [4000, '無', 6500], '臺北市內湖區': [3000, '無', 5000],
+                    '臺北市松山區': [3200, '無', 5300], '臺北市南港區': [3000, '無', 5300],
+                    '臺北市信義區': [3200, '無', 5300], '臺北市士林區': [3500, '無', 5700],
+                    '臺北市大同區': [3200, '無', 5300], '臺北市北投區': [3500, '無', 5700],
                     '新北市汐止區': [3000, '無', 5300], '新北市淡水區': [4300, '無', 6500],
                     '宜蘭縣': [4800, '無', 7000], '基隆市': [4300, '無', 6500],
                     '花蓮縣': ['電洽', '無', '電洽'], '台東縣': ['電洽', '無', '電洽']
                 },
                 '17T': {
-                    '機場': [6000, '無', 12500], '台北市內湖區': ['電洽', '無', '電洽'],
-                    '台北市松山區': ['電洽', '無', '電洽'], '台北市南港區': ['電洽', '無', '電洽'],
-                    '台北市信義區': ['電洽', '無', '電洽'], '台北市士林區': ['電洽', '無', '電洽'],
-                    '台北市大同區': ['電洽', '無', '電洽'], '台北市北投區': ['電洽', '無', '電洽'],
+                    '機場': [6000, '無', 12500], '臺北市內湖區': ['電洽', '無', '電洽'],
+                    '臺北市松山區': ['電洽', '無', '電洽'], '臺北市南港區': ['電洽', '無', '電洽'],
+                    '臺北市信義區': ['電洽', '無', '電洽'], '臺北市士林區': ['電洽', '無', '電洽'],
+                    '臺北市大同區': ['電洽', '無', '電洽'], '臺北市北投區': ['電洽', '無', '電洽'],
                     '新北市汐止區': ['電洽', '無', '電洽'], '新北市淡水區': ['電洽', '無', '電洽'],
                     '宜蘭縣': ['電洽', '無', '電洽'], '基隆市': ['電洽', '無', '電洽'],
                     '花蓮縣': ['電洽', '無', '電洽'], '台東縣': ['電洽', '無', '電洽']
@@ -109,14 +109,14 @@
                     <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
                         {/* 標題欄：黃底紅字 */}
                         <div className="bg-[#FFCC00] p-6 text-center border-b-4 border-red-600">
-                            <h1 className="text-2xl font-black italic text-red-600">車輛報價查詢系統</h1>
+                            <h1 className="text-2xl font-black italic text-red-600">外車報價查詢系統</h1>
                         </div>
 
                         <div className="p-6">
                             {/* 地點選擇 */}
                             <div className="mb-6">
                                 <label className="block text-xs font-black text-slate-500 mb-2 uppercase tracking-widest flex items-center gap-1">
-                                    <i data-lucide="map-pin" className="w-3 h-3"></i> 1. 選擇取件地點
+                                    <i data-lucide="map-pin" className="w-3 h-3"></i> 1. 選擇您的取件地點
                                 </label>
                                 <select 
                                     value={selectedLocation} 
@@ -130,7 +130,7 @@
                                 <div className="mt-3 flex items-start gap-2 bg-blue-50 border border-blue-100 p-3 rounded-lg">
                                     <i data-lucide="info" className="w-4 h-4 text-blue-500 mt-0.5 shrink-0"></i>
                                     <p className="text-xs text-blue-700 leading-relaxed font-medium">
-                                        <span className="font-bold underline decoration-blue-300">備註：</span> 報價金額係以「台北市內湖區」發車送達計算，各區域運費可能隨具體地址調整。
+                                        <span className="font-bold underline decoration-blue-300">備註：</span> 報價金額係以「臺北市內湖區」發車送達計算，各區域運費可能隨具體地址調整。
                                     </p>
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
                         {/* 腳註 */}
                         <div className="bg-slate-50 py-3 text-center border-t border-slate-100 flex flex-col gap-1">
                             <p className="text-[10px] text-red-600 font-black italic tracking-widest">※ 此報價為未稅價 ※</p>
-                            <p className="text-[10px] text-slate-400 font-medium tracking-tight">費用請依實際報價為主</p>
+                            <p className="text-[10px] text-slate-400 font-medium tracking-tight">費用請依實際合約報價為主</p>
                         </div>
                     </div>
                 </div>
